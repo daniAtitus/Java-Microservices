@@ -25,8 +25,22 @@ public class CurrencyController {
     private final CurrencyRepository repository;
     private final CacheManager cacheManager;
 
-    DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-    String diaFormatado = LocalDate.now().toString();
+    public static LocalDate getDiaUtil (LocalDate data) {
+        return switch (data.getDayOfWeek()) {
+            case SATURDAY -> data.minusDays(1);
+            case SUNDAY -> data.minusDays(2);
+            default -> data;
+        };
+    }
+
+    private static final DateTimeFormatter ajustarData = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+
+    public static String formatarData(LocalDate data) {
+        return data.format(ajustarData);
+    }
+
+    LocalDate diaUtil = getDiaUtil(LocalDate.now());
+    String diaFormatado = formatarData(diaUtil);
 
     public CurrencyController(CurrencyRepository repository, CurrencyBCClient currencyBCClient, CacheManager cacheManager) {
         super();
